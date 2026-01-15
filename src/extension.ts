@@ -39,7 +39,7 @@ import {
 
 const KIND_CLI_NAME = 'kind';
 const KIND_DISPLAY_NAME = 'Kind';
-const KIND_MARKDOWN = `Podman Desktop can help you run Kind-powered local Kubernetes clusters on a container engine, such as Podman.\n\nMore information: [Podman Desktop Documentation](https://podman-desktop.io/docs/kind)`;
+const KIND_MARKDOWN = 'Podman Desktop can help you run Kind-powered local Kubernetes clusters on a container engine, such as Podman.\n\nMore information: [Podman Desktop Documentation](https://podman-desktop.io/docs/kind)';
 
 const API_KIND_INTERNAL_API_PORT = 6443;
 
@@ -65,8 +65,8 @@ let kindPath: string | undefined;
 let installer: KindInstaller;
 
 let provider: extensionApi.Provider;
-let latestAsset: KindGithubReleaseArtifactMetadata | undefined = undefined;
-let providerUpdate: extensionApi.ProviderUpdate | undefined = undefined;
+let latestAsset: KindGithubReleaseArtifactMetadata | undefined ;
+let providerUpdate: extensionApi.ProviderUpdate | undefined ;
 const imageHandler = new ImageHandler();
 
 async function installLatestKind(): Promise<string> {
@@ -216,7 +216,7 @@ async function updateClusters(
         delete: async (logger): Promise<void> => {
           const env: { [key: string]: string } = {};
           if (cluster.engineType === 'podman') {
-            env['KIND_EXPERIMENTAL_PROVIDER'] = 'podman';
+            env.KIND_EXPERIMENTAL_PROVIDER = 'podman';
           }
           env.PATH = getKindPath() ?? '';
           if (kindPath) {
@@ -290,7 +290,7 @@ export function refreshKindClustersOnProviderConnectionUpdate(provider: extensio
   });
 }
 
-let currentUpdateDisposable: extensionApi.Disposable | undefined = undefined;
+let currentUpdateDisposable: extensionApi.Disposable | undefined ;
 
 export async function createProvider(
   extensionContext: extensionApi.ExtensionContext,
@@ -387,12 +387,11 @@ export async function moveImage(
  */
 async function registerCliTool(
   extensionContext: extensionApi.ExtensionContext,
-  telemetryLogger: extensionApi.TelemetryLogger,
 ): Promise<void> {
   const octokit = new Octokit();
-  installer = new KindInstaller(extensionContext.storagePath, telemetryLogger, octokit);
+  installer = new KindInstaller(extensionContext.storagePath, octokit);
 
-  let binary: { path: string; version: string } | undefined = undefined;
+  let binary: { path: string; version: string } | undefined ;
   let installationSource: extensionApi.CliToolInstallationSource | undefined;
   // let's try to get system-wide kind install first
   try {
@@ -594,7 +593,7 @@ export async function activate(extensionContext: extensionApi.ExtensionContext):
   const telemetryLogger = extensionApi.env.createTelemetryLogger();
 
   // let's register the CLI Tool
-  await registerCliTool(extensionContext, telemetryLogger);
+  await registerCliTool(extensionContext);
 
   // let's create a provider
   await createProvider(extensionContext, telemetryLogger);

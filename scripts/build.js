@@ -18,9 +18,9 @@
  ***********************************************************************/
 
 const AdmZip = require('adm-zip');
-const path = require('path');
+const path = require('node:path');
 const packageJson = require('../package.json');
-const fs = require('fs');
+const fs = require('node:fs');
 const { mkdirp } = require('mkdirp');
 
 const destFile = path.resolve(__dirname, `../${packageJson.name}.cdix`);

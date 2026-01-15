@@ -49,12 +49,10 @@ export function getKindPath(): string | undefined {
   if (extensionApi.env.isMac) {
     if (!env.PATH) {
       return macosExtraPath;
-    } else {
-      return env.PATH.concat(':').concat(macosExtraPath);
     }
-  } else {
-    return env.PATH;
+      return env.PATH.concat(':').concat(macosExtraPath);
   }
+    return env.PATH;
 }
 
 /**
@@ -80,14 +78,13 @@ export async function getKindBinaryInfo(executable: string): Promise<{ version: 
       version: parseKindVersion(stdout),
       path: executable,
     };
-  } else {
+  }
     const kindPath = getKindPath() ?? '';
     const { stdout } = await extensionApi.process.exec(executable, ['--version'], { env: { PATH: kindPath } });
     return {
       version: parseKindVersion(stdout),
       path: await whereBinary(executable), // we need to where/which the executable to find its real path
     };
-  }
 }
 
 /**

@@ -6,7 +6,7 @@
   },
   "files": {
     "maxSize": 1600000,
-    "includes": ["**", "!**/coverage", "!**/dist"]
+    "includes": ["**", "!**/coverage", "!**/dist", "!**/tests/resources"]
   },
   "javascript": {
     "parser": {

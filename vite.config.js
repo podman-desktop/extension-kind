@@ -16,8 +16,8 @@
  * SPDX-License-Identifier: Apache-2.0
  ***********************************************************************/
 
-import { join } from 'path';
-import { builtinModules } from 'module';
+import { join } from 'node:path';
+import { builtinModules } from 'node:module';
 
 const PACKAGE_ROOT = __dirname;
 
@@ -31,7 +31,7 @@ const config = {
   envDir: process.cwd(),
   resolve: {
     alias: {
-      '/@/': join(PACKAGE_ROOT, 'src') + '/',
+      '/@/': `${join(PACKAGE_ROOT, 'src')}/`,
     },
   },
   build: {

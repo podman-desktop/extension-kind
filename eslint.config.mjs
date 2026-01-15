@@ -50,6 +50,7 @@ export default [
       '**/*.config.*js',
       '**/dist/**/*',
       '**/test-resources',
+      '**/tests/resources',
       '**/__mocks__/',
       '**/coverage/',
       'extensions/*.ts',

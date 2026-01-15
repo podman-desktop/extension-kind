@@ -59,7 +59,6 @@ export class KindInstaller {
 
   constructor(
     private readonly storagePath: string,
-    private telemetryLogger: extensionApi.TelemetryLogger,
     private readonly octokit: Octokit,
   ) {
     this.assetNames.set(WINDOWS_X64_PLATFORM, WINDOWS_X64_ASSET_NAME);
@@ -117,20 +116,22 @@ export class KindInstaller {
 
     if (selectedRelease) {
       return selectedRelease;
-    } else {
-      throw new Error('No version selected');
     }
+      throw new Error('No version selected');
   }
 
   // Get the asset id of a given release number for a given operating system and architecture
   // operatingSystem: win32, darwin, linux (see os.platform())
   // arch: x64, arm64 (see os.arch())
   async getReleaseAssetId(releaseId: number, operatingSystem: string, arch: string): Promise<number> {
+    let assetOperatingSystem = operatingSystem;
+    let assetArch = arch;
+
     if (operatingSystem === 'win32') {
-      operatingSystem = 'windows';
+      assetOperatingSystem = 'windows';
     }
     if (arch === 'x64') {
-      arch = 'amd64';
+      assetArch = 'amd64';
     }
 
     const listOfAssets = await this.octokit.repos.listReleaseAssets({
@@ -139,12 +140,12 @@ export class KindInstaller {
       release_id: releaseId,
     });
 
-    const searchedAssetName = `kind-${operatingSystem}-${arch}`;
+    const searchedAssetName = `kind-${assetOperatingSystem}-${assetArch}`;
 
     // search for the right asset
     const asset = listOfAssets.data.find(asset => searchedAssetName === asset.name);
     if (!asset) {
-      throw new Error(`No asset found for ${operatingSystem} and ${arch}`);
+      throw new Error(`No asset found for ${assetOperatingSystem} and ${assetArch}`);
     }
 
     return asset.id;

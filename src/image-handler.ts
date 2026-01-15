@@ -42,7 +42,8 @@ export class ImageHandler {
     // but if there are multiple ones, prompt the user to select one
     if (clusters.length === 0) {
       throw new Error('No Kind clusters to push to');
-    } else if (clusters.length === 1) {
+    } 
+    if (clusters.length === 1) {
       selectedCluster = { label: clusters[0].name, engineType: clusters[0].engineType };
     } else {
       selectedCluster = await extensionApi.window.showQuickPick(
@@ -61,14 +62,14 @@ export class ImageHandler {
 
       // Create a name:tag string for the image
       if (image.tag) {
-        name = name + ':' + image.tag;
+        name = `${name}:${image.tag}`;
       }
 
       // Check to see if the selected cluster is either podman or docker
       if (selectedCluster.engineType === 'podman') {
-        env['KIND_EXPERIMENTAL_PROVIDER'] = 'podman';
+        env.KIND_EXPERIMENTAL_PROVIDER = 'podman';
       } else {
-        env['KIND_EXPERIMENTAL_PROVIDER'] = 'docker';
+        env.KIND_EXPERIMENTAL_PROVIDER = 'docker';
       }
 
       env.PATH = getKindPath() ?? '';

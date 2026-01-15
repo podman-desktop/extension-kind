@@ -59,7 +59,7 @@ function getTags(tags: Tags): Tags {
       if (tag.tag === 'tag:yaml.org,2002:int') {
         const newTag = { ...tag };
         newTag.test = /^(0[0-7][0-7][0-7])$/;
-        newTag.resolve = (str: string): number => parseInt(str, 8);
+        newTag.resolve = (str: string): number => Number.parseInt(str, 8);
         tags.unshift(newTag);
         break;
       }
@@ -133,7 +133,7 @@ export async function waitForCoreDNSReady(kubeConfig: KubeConfig, logger?: exten
 export async function setupIngressController(clusterName: string): Promise<void> {
   const manifest = convertYamlFrom11to12(ingressManifests);
   const yml = loadAllYaml(manifest);
-  await extensionApi.kubernetes.createResources('kind-' + clusterName, yml);
+  await extensionApi.kubernetes.createResources(`kind-${clusterName}`, yml);
 }
 
 async function validateAndCheckPort(portName: string, port: number, records: AuditRecord[]): Promise<void> {
@@ -226,7 +226,7 @@ export async function createCluster(
   token?: CancellationToken,
 ): Promise<void> {
   // grab config file
-  let configFile;
+  let configFile: string | undefined;
   if (params['kind.cluster.creation.configFile'] && typeof params['kind.cluster.creation.configFile'] === 'string') {
     configFile = String(params['kind.cluster.creation.configFile']);
   }
@@ -245,7 +245,7 @@ export async function createCluster(
   const env: { [key: string]: string } = {};
   // add KIND_EXPERIMENTAL_PROVIDER env variable if needed
   if (provider === 'podman') {
-    env['KIND_EXPERIMENTAL_PROVIDER'] = 'podman';
+    env.KIND_EXPERIMENTAL_PROVIDER = 'podman';
   }
 
   // grab http host port
@@ -273,7 +273,7 @@ export async function createCluster(
   }
 
   // grab custom kind node image if defined
-  let controlPlaneImage = undefined;
+  let controlPlaneImage: string | undefined;
   if (
     params['kind.cluster.creation.controlPlaneImage'] &&
     typeof params['kind.cluster.creation.controlPlaneImage'] === 'string'
@@ -353,7 +353,7 @@ export async function createCluster(
     }
   } catch (error) {
     telemetryOptions.error = error;
-    let errorMessage: string = '';
+    let errorMessage = '';
 
     if (error && typeof error === 'object' && 'message' in error) {
       errorMessage = String(error.message);
