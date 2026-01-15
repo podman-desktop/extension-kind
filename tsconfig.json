@@ -10,7 +10,7 @@
     "rootDirs": ["src", "scripts"],
     "outDir": "dist",
     "skipLibCheck": true,
-    "types": ["node"]
+    "types": ["node", "vite/client"]
   },
   "include": ["src", "types/*.d.ts", "../../types/**/*.d.ts", "scripts"]
 }
