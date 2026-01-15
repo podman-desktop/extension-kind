@@ -353,7 +353,7 @@ describe('cli#install', () => {
     const cliToolInstaller: extensionApi.CliToolInstaller = await getCliToolInstaller();
 
     await expect(() => cliToolInstaller?.doInstall({} as unknown as extensionApi.Logger)).rejects.toThrowError(
-      `Cannot install kind. Version 0.0.1 in test-storage-path/kind is already installed.`,
+      'Cannot install kind. Version 0.0.1 in test-storage-path/kind is already installed.',
     );
   });
 
@@ -361,7 +361,7 @@ describe('cli#install', () => {
     const cliToolInstaller: extensionApi.CliToolInstaller = await getCliToolInstaller();
 
     await expect(() => cliToolInstaller?.doInstall({} as unknown as extensionApi.Logger)).rejects.toThrowError(
-      `Cannot install kind. No release selected.`,
+      'Cannot install kind. No release selected.',
     );
   });
 

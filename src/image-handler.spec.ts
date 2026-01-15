@@ -58,7 +58,7 @@ test('expect error to be raised if no clusters are given', async () => {
 
 test('expect image name to be given', async () => {
   (extensionApi.containerEngine.saveImage as Mock).mockImplementation(
-    (engineId: string, id: string, filename: string) => fs.promises.open(filename, 'w'),
+    (_engineId: string, _id: string, filename: string) => fs.promises.open(filename, 'w'),
   );
 
   await imageHandler.moveImage(
@@ -71,7 +71,7 @@ test('expect image name to be given', async () => {
 
 test('expect getting showInformationMessage when image is pushed', async () => {
   (extensionApi.containerEngine.saveImage as Mock).mockImplementation(
-    (engineId: string, id: string, filename: string) => fs.promises.open(filename, 'w'),
+    (_engineId: string, _id: string, filename: string) => fs.promises.open(filename, 'w'),
   );
 
   await imageHandler.moveImage(
@@ -84,7 +84,7 @@ test('expect getting showInformationMessage when image is pushed', async () => {
 
 test('expect image name and tag to be given', async () => {
   (extensionApi.containerEngine.saveImage as Mock).mockImplementation(
-    (engineId: string, id: string, filename: string) => fs.promises.open(filename, 'w'),
+    (_engineId: string, _id: string, filename: string) => fs.promises.open(filename, 'w'),
   );
 
   await imageHandler.moveImage(
@@ -97,7 +97,7 @@ test('expect image name and tag to be given', async () => {
 
 test('expect cli is called with right PATH', async () => {
   (extensionApi.containerEngine.saveImage as Mock).mockImplementation(
-    (engineId: string, id: string, filename: string) => fs.promises.open(filename, 'w'),
+    (_engineId: string, _id: string, filename: string) => fs.promises.open(filename, 'w'),
   );
 
   (getKindPath as Mock).mockReturnValue('my-custom-path');

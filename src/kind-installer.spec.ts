@@ -51,15 +51,8 @@ const octokitMock: Octokit = {
   },
 } as unknown as Octokit;
 
-const telemetryLogUsageMock = vi.fn();
-const telemetryLogErrorMock = vi.fn();
-const telemetryLoggerMock = {
-  logUsage: telemetryLogUsageMock,
-  logError: telemetryLogErrorMock,
-} as unknown as extensionApi.TelemetryLogger;
-
 beforeEach(() => {
-  installer = new KindInstaller('.', telemetryLoggerMock, octokitMock);
+  installer = new KindInstaller('.', octokitMock);
   vi.resetAllMocks();
 
   (extensionApi.env.isLinux as unknown as boolean) = false;
