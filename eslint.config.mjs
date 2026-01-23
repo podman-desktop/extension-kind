@@ -55,6 +55,7 @@ export default [
       '**/coverage/',
       'extensions/*.ts',
       'scripts/**',
+      'builtin/**',
     ],
   },
   js.configs.recommended,
