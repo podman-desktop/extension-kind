@@ -103,7 +103,7 @@
   },
   "scripts": {
     "install:contour": "tsx ./scripts/download.ts",
-    "build": "vite build && node ./scripts/build.js",
+    "build": "vite build",
     "test": "vitest run --coverage",
     "test:watch": "vitest watch --coverage",
     "watch": "vite build -w",
