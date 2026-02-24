@@ -696,9 +696,7 @@ test('waitForCoreDNSReady should handle errors and cleanup properly', async () =
     warn: vi.fn(),
   };
   const mockKubeConfig = new KubeConfig();
-  await expect(waitForCoreDNSReady(mockKubeConfig, logger)).rejects.toThrow(
-    'Cluster not ready',
-  );
+  await expect(waitForCoreDNSReady(mockKubeConfig, logger)).rejects.toThrow('Cluster not ready');
 
   expect(KindClusterWatcher.prototype.dispose).toHaveBeenCalled();
 });
