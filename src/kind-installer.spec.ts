@@ -75,7 +75,9 @@ test('error: expect installBinaryToSystem to fail with a non existing binary', a
 
   vi.spyOn(extensionApi.process, 'exec').mockRejectedValue(new Error('test error'));
 
-  await expect(() => util.installBinaryToSystem('test', 'tmpBinary')).rejects.toThrowError('test error');
+  await expect(() => util.installBinaryToSystem('test', 'tmpBinary')).rejects.toThrowError(
+    'Error making binary executable',
+  );
 });
 
 describe('grabLatestsReleasesMetadata', () => {

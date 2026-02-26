@@ -87,7 +87,7 @@ test('expect error is cli returns non zero exit code', async () => {
     await createCluster({}, '', telemetryLoggerMock);
   } catch (err) {
     expect(err).to.be.a('Error');
-    expect((err as Error).message).equal('Failed to create kind cluster. error');
+    expect((err as Error).message).equal('Failed to create kind cluster');
     expect(telemetryLogUsageMock).toBeCalledWith('createCluster', expect.objectContaining({ error: error }));
     expect(telemetryLogErrorMock).not.toBeCalled();
   }
@@ -370,7 +370,7 @@ test('expect error if Kubernetes reports error', async () => {
   } catch (err) {
     expect(extensionApi.kubernetes.createResources).toBeCalled();
     expect(err).to.be.a('Error');
-    expect((err as Error).message).equal('Failed to create kind cluster. Kubernetes error');
+    expect((err as Error).message).equal('Failed to create kind cluster');
     expect(telemetryLogErrorMock).not.toBeCalled();
     expect(telemetryLogUsageMock).toBeCalledWith('createCluster', expect.objectContaining(error));
   }
@@ -696,9 +696,7 @@ test('waitForCoreDNSReady should handle errors and cleanup properly', async () =
     warn: vi.fn(),
   };
   const mockKubeConfig = new KubeConfig();
-  await expect(waitForCoreDNSReady(mockKubeConfig, logger)).rejects.toThrow(
-    'Cluster not ready: Error: Nodes not ready',
-  );
+  await expect(waitForCoreDNSReady(mockKubeConfig, logger)).rejects.toThrow('Cluster not ready');
 
   expect(KindClusterWatcher.prototype.dispose).toHaveBeenCalled();
 });
