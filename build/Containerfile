@@ -17,11 +17,24 @@
 
 FROM ghcr.io/podman-desktop/podman-desktop-kind-ext-builder:next AS builder
 
+ARG AIRGAP="false"
+
 COPY . .
 
 RUN pnpm --frozen-lockfile install && \
     pnpm build
 
+RUN mkdir /opt/app-root/extension && \
+    cp -r dist /opt/app-root/extension/
+
+RUN if [ $AIRGAP = "true" ]; then \
+    cp -r bin /opt/app-root/extension/ ; \
+fi
+
+COPY package.json /opt/app-root/extension/
+COPY LICENSE /opt/app-root/extension/
+COPY README.md /opt/app-root/extension/
+COPY icon.png /opt/app-root/extension/
 
 FROM scratch
 
@@ -30,8 +43,4 @@ LABEL org.opencontainers.image.title="Kind extension" \
       org.opencontainers.image.vendor="podman-desktop" \
       io.podman-desktop.api.version=">= 1.24.0"
 
-COPY package.json /extension/
-COPY LICENSE /extension/
-COPY icon.png /extension/
-COPY README.md /extension/
-COPY --from=builder /opt/app-root/src/dist /extension/dist
+COPY --from=builder /opt/app-root/extension /extension
