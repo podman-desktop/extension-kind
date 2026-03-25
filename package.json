@@ -121,7 +121,7 @@
     "yaml": "^2.8.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.8",
+    "@biomejs/biome": "^2.4.9",
     "@eslint/compat": "^2.0.2",
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.39.2",
