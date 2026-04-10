@@ -5,7 +5,7 @@
     "module": "esnext",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "lib": ["ES2017", "webworker"],
+    "lib": ["ES2024", "webworker"],
     "sourceMap": true,
     "rootDirs": ["src", "scripts"],
     "outDir": "dist",
