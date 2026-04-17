@@ -124,7 +124,7 @@ export async function waitForCoreDNSReady(kubeConfig: KubeConfig, logger?: exten
     logger?.log('CoreDNS ready');
     logger?.log('All cluster components ready');
   } catch (error) {
-    throw new Error(`Cluster not ready: ${String(error)}`);
+    throw new Error('Cluster not ready', { cause: error });
   } finally {
     watcher.dispose();
   }
@@ -353,15 +353,7 @@ export async function createCluster(
     }
   } catch (error) {
     telemetryOptions.error = error;
-    let errorMessage = '';
-
-    if (error && typeof error === 'object' && 'message' in error) {
-      errorMessage = String(error.message);
-    } else if (typeof error === 'string') {
-      errorMessage = error;
-    }
-
-    throw new Error(`Failed to create kind cluster. ${errorMessage}`);
+    throw new Error('Failed to create kind cluster', { cause: error });
   } finally {
     const endTime = performance.now();
     telemetryOptions.duration = endTime - startTime;
