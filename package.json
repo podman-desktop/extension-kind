@@ -118,7 +118,7 @@
     "@octokit/rest": "^22.0.1",
     "@podman-desktop/api": "1.26.2",
     "mustache": "^4.2.0",
-    "yaml": "^2.8.3"
+    "yaml": "^2.8.4"
   },
   "pnpm": {
     "overrides": {
