@@ -18,6 +18,8 @@
 FROM ghcr.io/podman-desktop/podman-desktop-kind-ext-builder:next AS builder
 
 ARG AIRGAP="false"
+ARG TARGET_OS
+ARG TARGET_ARCH
 
 COPY . .
 
@@ -27,8 +29,13 @@ RUN pnpm --frozen-lockfile install && \
 RUN mkdir /opt/app-root/extension && \
     cp -r dist /opt/app-root/extension/
 
-RUN if [ $AIRGAP = "true" ]; then \
-    cp -r bin /opt/app-root/extension/ ; \
+RUN if [ "$AIRGAP" = "true" ]; then \
+    mkdir /opt/app-root/extension/bin && \
+    BINARY_NAME="kind-${TARGET_OS}-${TARGET_ARCH}" && \
+    if [ "${TARGET_OS}" = "windows" ]; then \
+        BINARY_NAME="${BINARY_NAME}.exe" ; \
+    fi && \
+    cp bin/${BINARY_NAME} /opt/app-root/extension/bin/ ; \
 fi
 
 COPY package.json /opt/app-root/extension/
