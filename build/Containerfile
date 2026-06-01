@@ -15,7 +15,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM ghcr.io/podman-desktop/podman-desktop-kind-ext-builder:next AS builder
+FROM --platform=$BUILDPLATFORM ghcr.io/podman-desktop/podman-desktop-kind-ext-builder:next AS builder
 
 ARG AIRGAP="false"
 ARG TARGETOS
