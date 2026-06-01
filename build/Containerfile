@@ -18,8 +18,9 @@
 FROM ghcr.io/podman-desktop/podman-desktop-kind-ext-builder:next AS builder
 
 ARG AIRGAP="false"
-ARG TARGET_OS
-ARG TARGET_ARCH
+ARG TARGETOS
+ARG TARGETARCH
+ARG KIND_VERSION
 
 COPY . .
 
@@ -31,11 +32,13 @@ RUN mkdir /opt/app-root/extension && \
 
 RUN if [ "$AIRGAP" = "true" ]; then \
     mkdir /opt/app-root/extension/bin && \
-    BINARY_NAME="kind-${TARGET_OS}-${TARGET_ARCH}" && \
-    if [ "${TARGET_OS}" = "windows" ]; then \
-        BINARY_NAME="${BINARY_NAME}.exe" ; \
+    DOWNLOAD_NAME="kind-${TARGETOS}-${TARGETARCH}" && \
+    LOCAL_NAME="${DOWNLOAD_NAME}" && \
+    if [ "${TARGETOS}" = "windows" ]; then \
+        LOCAL_NAME="${LOCAL_NAME}.exe" ; \
     fi && \
-    cp bin/${BINARY_NAME} /opt/app-root/extension/bin/ ; \
+    curl -Lo /opt/app-root/extension/bin/${LOCAL_NAME} https://kind.sigs.k8s.io/dl/${KIND_VERSION}/${DOWNLOAD_NAME} && \
+    chmod +x /opt/app-root/extension/bin/${LOCAL_NAME} ; \
 fi
 
 COPY package.json /opt/app-root/extension/

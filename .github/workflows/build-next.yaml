@@ -69,31 +69,16 @@ jobs:
           tags: ${{ steps.builder-image.outputs.tags }}
           registry: ghcr.io/${{ github.repository_owner }}
   
-  extension-image-airgapped:
-    name: Build airgapped extension OCI image (${{ matrix.os }}-${{ matrix.arch }})
+  extension-image:
+    name: Build and publish extension OCI image ${{ matrix.airgap == 'true' && '(airgapped)' || '' }}
     runs-on: ubuntu-24.04
     needs: builder-image
     strategy:
       matrix:
-        os: ['linux', 'darwin', 'windows']
-        arch: ['amd64', 'arm64']
-        exclude:
-          - os: windows
-            arch: arm64
+        airgap: ['true', 'false']
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Install Kind binary for airgapped image
-        run: |
-          mkdir bin
-          DOWNLOAD_NAME="kind-${{ matrix.os }}-${{ matrix.arch }}"
-          LOCAL_NAME="${DOWNLOAD_NAME}"
-          if [ "${{ matrix.os }}" = "windows" ]; then
-            LOCAL_NAME="${LOCAL_NAME}.exe"
-          fi
-          curl -Lo ./bin/${LOCAL_NAME} https://kind.sigs.k8s.io/dl/${{ env.KIND_VERSION }}/${DOWNLOAD_NAME}
-          chmod +x ./bin/${LOCAL_NAME}
 
       - name: Install qemu dependency
         run: |
@@ -104,17 +89,16 @@ jobs:
         id: extension-image
         uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2.13
         with:
-          image: podman-desktop-kind-ext-airgap-${{ matrix.os }}-${{ matrix.arch }}
+          image: podman-desktop-kind-ext${{ matrix.airgap == 'true' && '-airgap' || '' }}
           tags: next ${{ github.sha }}
-          archs: ${{ matrix.arch }}
+          platforms: ${{ matrix.airgap == 'true' && 'linux/amd64, linux/arm64, darwin/amd64, darwin/arm64, windows/amd64' || 'linux/amd64, linux/arm64' }}
           containerfiles: |
             build/Containerfile
           context: .
           oci: true
           build-args: |
-            AIRGAP=true
-            TARGET_OS=${{ matrix.os }}
-            TARGET_ARCH=${{ matrix.arch }}
+            AIRGAP=${{ matrix.airgap }}
+            KIND_VERSION=${{ env.KIND_VERSION }}
 
       - name: Log in to ghcr.io
         uses: redhat-actions/podman-login@4934294ad0449894bcd1e9f191899d7292469603 # v1.7
@@ -131,85 +115,4 @@ jobs:
           tags: ${{ steps.extension-image.outputs.tags }}
           registry: ghcr.io/${{ github.repository_owner }}
 
-  extension-image:
-    name: Build and publish extension OCI image
-    runs-on: ubuntu-24.04
-    needs: builder-image
-
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Install qemu dependency
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y qemu-user-static
-
-      - name: build extension image
-        id: extension-image
-        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2.13
-        with:
-          image: podman-desktop-kind-ext
-          tags: next ${{ github.sha }}
-          archs: amd64, arm64
-          containerfiles: |
-            build/Containerfile
-          context: .
-          oci: true
-          build-args: |
-            AIRGAP=false
-
-      - name: Log in to ghcr.io
-        uses: redhat-actions/podman-login@4934294ad0449894bcd1e9f191899d7292469603 # v1.7
-        with:
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: ghcr.io
-
-      - name: publish extension to ghcr.io
-        id: push-to-ghcr
-        uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2.8
-        with:
-          image: ${{ steps.extension-image.outputs.image }}
-          tags: ${{ steps.extension-image.outputs.tags }}
-          registry: ghcr.io/${{ github.repository_owner }}
-
-  create-manifest-airgapped:
-    name: Create and publish airgapped manifest
-    runs-on: ubuntu-24.04
-    needs: extension-image-airgapped
-
-    steps:
-      - name: Log in to ghcr.io
-        uses: redhat-actions/podman-login@4934294ad0449894bcd1e9f191899d7292469603 # v1.7
-        with:
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: ghcr.io
-
-      - name: Create manifest lists
-        run: |
-          IMAGE_BASE="ghcr.io/${{ github.repository_owner }}/podman-desktop-kind-ext-airgap"
-
-          # Create manifest for next tag
-          podman manifest create ${IMAGE_BASE}:next
-          podman manifest add ${IMAGE_BASE}:next ${IMAGE_BASE}-linux-amd64:next --os linux --arch amd64
-          podman manifest add ${IMAGE_BASE}:next ${IMAGE_BASE}-linux-arm64:next --os linux --arch arm64
-          podman manifest add ${IMAGE_BASE}:next ${IMAGE_BASE}-darwin-amd64:next --os darwin --arch amd64
-          podman manifest add ${IMAGE_BASE}:next ${IMAGE_BASE}-darwin-arm64:next --os darwin --arch arm64
-          podman manifest add ${IMAGE_BASE}:next ${IMAGE_BASE}-windows-amd64:next --os windows --arch amd64
-
-          # Create manifest for SHA tag
-          podman manifest create ${IMAGE_BASE}:${{ github.sha }}
-          podman manifest add ${IMAGE_BASE}:${{ github.sha }} ${IMAGE_BASE}-linux-amd64:${{ github.sha }} --os linux --arch amd64
-          podman manifest add ${IMAGE_BASE}:${{ github.sha }} ${IMAGE_BASE}-linux-arm64:${{ github.sha }} --os linux --arch arm64
-          podman manifest add ${IMAGE_BASE}:${{ github.sha }} ${IMAGE_BASE}-darwin-amd64:${{ github.sha }} --os darwin --arch amd64
-          podman manifest add ${IMAGE_BASE}:${{ github.sha }} ${IMAGE_BASE}-darwin-arm64:${{ github.sha }} --os darwin --arch arm64
-          podman manifest add ${IMAGE_BASE}:${{ github.sha }} ${IMAGE_BASE}-windows-amd64:${{ github.sha }} --os windows --arch amd64
-
-      - name: Push manifests to ghcr.io
-        uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2.8
-        with:
-          image: podman-desktop-kind-ext-airgap
-          tags: next ${{ github.sha }}
-          registry: ghcr.io/${{ github.repository_owner }}
 
