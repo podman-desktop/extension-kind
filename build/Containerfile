@@ -33,7 +33,7 @@ RUN mkdir /opt/app-root/extension && \
 RUN if [ "$AIRGAP" = "true" ]; then \
     mkdir /opt/app-root/extension/bin && \
     DOWNLOAD_NAME="kind-${TARGETOS}-${TARGETARCH}" && \
-    LOCAL_NAME="${DOWNLOAD_NAME}" && \
+    LOCAL_NAME="kind" && \
     if [ "${TARGETOS}" = "windows" ]; then \
         LOCAL_NAME="${LOCAL_NAME}.exe" ; \
     fi && \
