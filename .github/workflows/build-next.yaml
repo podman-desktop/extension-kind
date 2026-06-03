@@ -74,6 +74,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs: builder-image
     strategy:
+      fail-fast: false
       matrix:
         airgap: ['true', 'false']
 

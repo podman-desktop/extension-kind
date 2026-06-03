@@ -37,7 +37,7 @@ RUN if [ "$AIRGAP" = "true" ]; then \
     if [ "${TARGETOS}" = "windows" ]; then \
         LOCAL_NAME="${LOCAL_NAME}.exe" ; \
     fi && \
-    curl -Lo /opt/app-root/extension/bin/${LOCAL_NAME} https://kind.sigs.k8s.io/dl/${KIND_VERSION}/${DOWNLOAD_NAME} && \
+    curl -fLo /opt/app-root/extension/bin/${LOCAL_NAME} https://kind.sigs.k8s.io/dl/${KIND_VERSION}/${DOWNLOAD_NAME} && \
     chmod +x /opt/app-root/extension/bin/${LOCAL_NAME} ; \
 fi
 
