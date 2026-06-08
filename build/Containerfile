@@ -15,13 +15,36 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM ghcr.io/podman-desktop/podman-desktop-kind-ext-builder:next AS builder
+FROM --platform=$BUILDPLATFORM ghcr.io/podman-desktop/podman-desktop-kind-ext-builder:next AS builder
+
+ARG AIRGAP="false"
+ARG TARGETOS
+ARG TARGETARCH
+ARG KIND_VERSION
 
 COPY . .
 
 RUN pnpm --frozen-lockfile install && \
     pnpm build
 
+RUN mkdir /opt/app-root/extension && \
+    cp -r dist /opt/app-root/extension/
+
+RUN if [ "$AIRGAP" = "true" ]; then \
+    mkdir /opt/app-root/extension/bin && \
+    DOWNLOAD_NAME="kind-${TARGETOS}-${TARGETARCH}" && \
+    LOCAL_NAME="kind" && \
+    if [ "${TARGETOS}" = "windows" ]; then \
+        LOCAL_NAME="${LOCAL_NAME}.exe" ; \
+    fi && \
+    curl -fLo /opt/app-root/extension/bin/${LOCAL_NAME} https://kind.sigs.k8s.io/dl/${KIND_VERSION}/${DOWNLOAD_NAME} && \
+    chmod +x /opt/app-root/extension/bin/${LOCAL_NAME} ; \
+fi
+
+COPY package.json /opt/app-root/extension/
+COPY LICENSE /opt/app-root/extension/
+COPY README.md /opt/app-root/extension/
+COPY icon.png /opt/app-root/extension/
 
 FROM scratch
 
@@ -30,8 +53,4 @@ LABEL org.opencontainers.image.title="Kind extension" \
       org.opencontainers.image.vendor="podman-desktop" \
       io.podman-desktop.api.version=">= 1.24.0"
 
-COPY package.json /extension/
-COPY LICENSE /extension/
-COPY icon.png /extension/
-COPY README.md /extension/
-COPY --from=builder /opt/app-root/src/dist /extension/dist
+COPY --from=builder /opt/app-root/extension /extension

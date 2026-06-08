@@ -26,6 +26,9 @@ on:
     branches:
       - 'main'
 
+env:
+  KIND_VERSION: v0.31.0
+
 jobs:
   builder-image:
     name: Build and publish builder OCI image
@@ -67,9 +70,13 @@ jobs:
           registry: ghcr.io/${{ github.repository_owner }}
   
   extension-image:
-    name: Build and publish extension OCI image
+    name: Build and publish extension OCI image ${{ matrix.airgap == 'true' && '(airgapped)' || '' }}
     runs-on: ubuntu-24.04
     needs: builder-image
+    strategy:
+      fail-fast: false
+      matrix:
+        airgap: ['true', 'false']
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -83,13 +90,16 @@ jobs:
         id: extension-image
         uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2.13
         with:
-          image: podman-desktop-kind-ext
+          image: podman-desktop-kind-ext${{ matrix.airgap == 'true' && '-airgap' || '' }}
           tags: next ${{ github.sha }}
-          archs: amd64, arm64
+          platforms: ${{ matrix.airgap == 'true' && 'linux/amd64, linux/arm64, darwin/amd64, darwin/arm64, windows/amd64' || 'linux/amd64, linux/arm64' }}
           containerfiles: |
             build/Containerfile
           context: .
           oci: true
+          build-args: |
+            AIRGAP=${{ matrix.airgap }}
+            KIND_VERSION=${{ env.KIND_VERSION }}
 
       - name: Log in to ghcr.io
         uses: redhat-actions/podman-login@4934294ad0449894bcd1e9f191899d7292469603 # v1.7
@@ -105,3 +115,5 @@ jobs:
           image: ${{ steps.extension-image.outputs.image }}
           tags: ${{ steps.extension-image.outputs.tags }}
           registry: ghcr.io/${{ github.repository_owner }}
+
+
