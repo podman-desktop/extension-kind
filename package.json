@@ -143,7 +143,7 @@
     "@eslint/js": "^10.0.1",
     "@octokit/core": "^7.0.6",
     "@octokit/types": "^16.0.0",
-    "@types/node": "^25.2.3",
+    "@types/node": "^26.1.0",
     "@vitest/coverage-v8": "^4.1.8",
     "adm-zip": "^0.5.18",
     "eslint": "^10.6.0",
