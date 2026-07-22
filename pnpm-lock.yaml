@@ -16,7 +16,7 @@ overrides:
   ws@>=8.0.0 <8.20.1: '>=8.20.1'
   esbuild@>=0.17.0 <0.28.1: '>=0.28.1'
   form-data@>=4.0.0 <4.0.6: '>=4.0.6'
-  js-yaml@<=4.1.1: 4.2.0
+  js-yaml@>=4.0.0 <4.3.0: 4.3.0
 
 importers:
 
@@ -1848,10 +1848,6 @@ packages:
   js-tokens@10.0.0:
     resolution: {integrity: sha512-lM/UBzQmfJRo9ABXbPWemivdCW8V2G8FHaHdypQaIy523snUjog0W71ayWXTjiR+ixeMyVHN2XcpnTd/liPg/Q==}
 
-  js-yaml@4.2.0:
-    resolution: {integrity: sha512-ePWsvanv0DWuDRsW8dnt+R4jQ31SCRCQ7hhNcPXZPsoBZiemuZNYGf7adZdqX2D86j6rvKp3RpCxVTSb8WQlOw==}
-    hasBin: true
-
   js-yaml@4.3.0:
     resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
     hasBin: true
@@ -2932,7 +2928,7 @@ snapshots:
       form-data: 4.0.6
       hpagent: 1.2.0
       isomorphic-ws: 5.0.0(ws@8.21.0)
-      js-yaml: 4.2.0
+      js-yaml: 4.3.0
       jsonpath-plus: 10.3.0
       node-fetch: 2.7.0
       openid-client: 6.8.1
@@ -4453,10 +4449,6 @@ snapshots:
   jose@6.1.3: {}
 
   js-tokens@10.0.0: {}
-
-  js-yaml@4.2.0:
-    dependencies:
-      argparse: 2.0.1
 
   js-yaml@4.3.0:
     dependencies:
