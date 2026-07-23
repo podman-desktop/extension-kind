@@ -156,7 +156,7 @@
     "eslint-plugin-redundant-undefined": "^1.0.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-sonarjs": "^4.0.3",
-    "eslint-plugin-unicorn": "^70.0.0",
+    "eslint-plugin-unicorn": "^72.0.0",
     "globals": "^17.7.0",
     "mkdirp": "^3.0.1",
     "tmp-promise": "^3.0.3",
