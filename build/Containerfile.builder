@@ -19,6 +19,11 @@ FROM registry.access.redhat.com/ubi9/nodejs-24:9.7-1766414990
 
 COPY package.json .
 COPY pnpm-lock.yaml .
+COPY pnpm-workspace.yaml .
 
-RUN npm install --global pnpm@10 && \
-    pnpm --frozen-lockfile install
+USER root
+RUN npm i -g corepack && corepack enable
+USER default
+
+RUN corepack install && \
+    CI=true pnpm --frozen-lockfile install

@@ -24,7 +24,7 @@ ARG KIND_VERSION
 
 COPY . .
 
-RUN pnpm --frozen-lockfile install && \
+RUN CI=true pnpm --frozen-lockfile install && \
     pnpm build
 
 RUN mkdir /opt/app-root/extension && \
