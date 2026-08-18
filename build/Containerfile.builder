@@ -26,4 +26,4 @@ RUN npm i -g corepack && corepack enable
 USER default
 
 RUN corepack install && \
-    CI=true pnpm --frozen-lockfile install
+    CI=true pnpm install
