@@ -56,8 +56,8 @@ importers:
         specifier: ^7.0.8
         version: 7.0.8
       '@octokit/types':
-        specifier: ^16.0.0
-        version: 16.0.0
+        specifier: ^18.0.0
+        version: 18.0.0
       '@types/node':
         specifier: ^25.2.3
         version: 25.2.3
