@@ -15,17 +15,29 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM --platform=$BUILDPLATFORM ghcr.io/podman-desktop/podman-desktop-kind-ext-builder:next AS builder
+# BUILDPLATFORM keeps the builder stage native: the airgapped variant is built
+# for darwin and windows platforms too, and only the kind binary downloaded
+# below actually differs per target.
+FROM --platform=$BUILDPLATFORM registry.access.redhat.com/ubi10/nodejs-24-minimal:10.1-1766060610 AS builder
 
 ARG AIRGAP="false"
 ARG TARGETOS
 ARG TARGETARCH
 ARG KIND_VERSION
 
-COPY . .
+WORKDIR /opt/app-root/src
 
-RUN CI=true pnpm install && \
-    pnpm build
+# pnpm runs an implicit dependency check before `run` scripts, which spawns a
+# nested `pnpm install`. Setting CI here rather than per-RUN makes every pnpm
+# invocation non-interactive, otherwise that nested install blocks on a prompt.
+ENV CI=true
+
+RUN npm i -g corepack@0.31.0 && corepack enable
+
+COPY --chown=1001:1001 . .
+
+RUN pnpm install
+RUN pnpm build
 
 RUN mkdir /opt/app-root/extension && \
     cp -r dist /opt/app-root/extension/
