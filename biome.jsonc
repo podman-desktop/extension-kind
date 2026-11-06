@@ -6,7 +6,7 @@
   },
   "files": {
     "maxSize": 1600000,
-    "includes": ["**", "!**/coverage", "!**/dist", "!**/tests/resources", "!**/builtin"]
+    "includes": ["**", "!**/coverage", "!**/dist", "!**/tests/resources", "!**/builtin", "!src/resources/contour.yaml"]
   },
   "javascript": {
     "parser": {

@@ -26,10 +26,10 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to release'
+        description: "Version to release"
         required: true
       branch:
-        description: 'Branch to use for the release'
+        description: "Branch to use for the release"
         required: true
         default: main
 env:
@@ -50,9 +50,9 @@ jobs:
       - name: Generate tag utilities
         id: TAG_UTIL
         run: |
-            TAG_PATTERN=${{ github.event.inputs.version }}
-            echo "githubTag=v$TAG_PATTERN" >> ${GITHUB_OUTPUT}
-            echo "extensionVersion=$TAG_PATTERN" >> ${GITHUB_OUTPUT}
+          TAG_PATTERN=${{ github.event.inputs.version }}
+          echo "githubTag=v$TAG_PATTERN" >> ${GITHUB_OUTPUT}
+          echo "extensionVersion=$TAG_PATTERN" >> ${GITHUB_OUTPUT}
 
       - name: tag
         run: |
@@ -105,7 +105,7 @@ jobs:
           sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${CURRENT_VERSION}\",#g" package.json
         env:
           GITHUB_TOKEN: ${{ secrets.PODMAN_DESKTOP_BOT_TOKEN }}
-  
+
   extension-image:
     name: Build and publish extension OCI image
     runs-on: ubuntu-24.04

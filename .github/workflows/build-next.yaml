@@ -24,7 +24,7 @@ permissions:
 on:
   push:
     branches:
-      - 'main'
+      - "main"
 
 env:
   KIND_VERSION: v0.31.0
@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        airgap: ['true', 'false']
+        airgap: ["true", "false"]
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -75,5 +75,3 @@ jobs:
           image: ${{ steps.extension-image.outputs.image }}
           tags: ${{ steps.extension-image.outputs.tags }}
           registry: ghcr.io/${{ github.repository_owner }}
-
-
