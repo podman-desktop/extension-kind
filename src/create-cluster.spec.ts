@@ -404,7 +404,7 @@ test('check that consilience check returns warning message', async () => {
 
   expect(checks).toBeDefined();
   expect(checks).toHaveProperty('records');
-  expect(checks.records.length).toBe(1);
+  expect(checks.records).toHaveLength(1);
   expect(checks.records[0]).to.contains({
     type: 'info',
     record: 'It is recommended to install Kind on a virtual machine with at least 6GB of memory.',
@@ -421,7 +421,7 @@ test('check that consilience check returns no warning messages', async () => {
 
   expect(checks).toBeDefined();
   expect(checks).toHaveProperty('records');
-  expect(checks.records.length).toBe(0);
+  expect(checks.records).toHaveLength(0);
 });
 
 test('check that consilience check returns warning message when image has no sha256 digest', async () => {
@@ -434,7 +434,7 @@ test('check that consilience check returns warning message when image has no sha
 
   expect(checks).toBeDefined();
   expect(checks).toHaveProperty('records');
-  expect(checks.records.length).toBe(1);
+  expect(checks.records).toHaveLength(1);
   expect(checks.records[0]).toHaveProperty('type');
   expect(checks.records[0].type).toBe('warning');
 });
@@ -449,7 +449,7 @@ test('check that consilience check returns warning message when config file is s
 
   expect(checks).toBeDefined();
   expect(checks).toHaveProperty('records');
-  expect(checks.records.length).toBe(1);
+  expect(checks.records).toHaveLength(1);
   expect(checks.records[0]).toHaveProperty('type');
   expect(checks.records[0].type).toBe('warning');
 });
@@ -463,7 +463,7 @@ test('check that auditItems returns error message when HTTP port is not availabl
 
   expect(checks).toBeDefined();
   expect(checks).toHaveProperty('records');
-  expect(checks.records.length).toBe(1);
+  expect(checks.records).toHaveLength(1);
   expect(checks.records[0]).toHaveProperty('type');
   expect(checks.records[0].type).toBe('error');
 });
@@ -477,7 +477,7 @@ test('check that auditItems returns error message when HTTPS port is not availab
 
   expect(checks).toBeDefined();
   expect(checks).toHaveProperty('records');
-  expect(checks.records.length).toBe(1);
+  expect(checks.records).toHaveLength(1);
   expect(checks.records[0]).toHaveProperty('type');
   expect(checks.records[0].type).toBe('error');
 });
@@ -504,7 +504,7 @@ test('check that auditItems returns error message when no provider connections a
 
   expect(checks).toBeDefined();
   expect(checks).toHaveProperty('records');
-  expect(checks.records.length).toBe(1);
+  expect(checks.records).toHaveLength(1);
   expect(checks.records[0]).toHaveProperty('type');
   expect(checks.records[0].type).toBe('error');
   expect(checks.records[0].record).toContain('The podman provider is not running');
@@ -519,7 +519,7 @@ test('check that auditItems returns error message when HTTP and HTTPS ports are 
 
   expect(checks).toBeDefined();
   expect(checks).toHaveProperty('records');
-  expect(checks.records.length).toBe(1);
+  expect(checks.records).toHaveLength(1);
   expect(checks.records[0]).toHaveProperty('type');
   expect(checks.records[0].type).toBe('error');
   expect(checks.records[0].record).toBe('HTTP and HTTPS ports must be different. Currently both are set to 9090.');
@@ -538,7 +538,7 @@ test('check that auditItems returns error message when port is invalid (> 65535)
 
   expect(checks).toBeDefined();
   expect(checks).toHaveProperty('records');
-  expect(checks.records.length).toBe(1);
+  expect(checks.records).toHaveLength(1);
   expect(checks.records[0]).toHaveProperty('type');
   expect(checks.records[0].type).toBe('error');
   expect(checks.records[0].record).toContain('Invalid HTTP Port 999999');
@@ -556,7 +556,7 @@ test('check that auditItems returns error message when port is invalid (< 1024)'
 
   expect(checks).toBeDefined();
   expect(checks).toHaveProperty('records');
-  expect(checks.records.length).toBe(1);
+  expect(checks.records).toHaveLength(1);
   expect(checks.records[0]).toHaveProperty('type');
   expect(checks.records[0].type).toBe('error');
   expect(checks.records[0].record).toContain('Invalid HTTP Port 500');
@@ -578,7 +578,7 @@ test('check that auditItems returns multiple error messages when both ports are 
 
   expect(checks).toBeDefined();
   expect(checks).toHaveProperty('records');
-  expect(checks.records.length).toBe(2);
+  expect(checks.records).toHaveLength(2);
 
   expect(checks.records[0]).toHaveProperty('type');
   expect(checks.records[0].type).toBe('error');
@@ -622,7 +622,7 @@ test('check that auditItems returns error message when multiple VMs exist but al
 
   expect(checks).toBeDefined();
   expect(checks).toHaveProperty('records');
-  expect(checks.records.length).toBe(1);
+  expect(checks.records).toHaveLength(1);
   expect(checks.records[0]).toHaveProperty('type');
   expect(checks.records[0].type).toBe('error');
   expect(checks.records[0].record).toContain('The podman provider is not running');
@@ -662,7 +662,7 @@ test('check that auditItems does not return error when multiple VMs exist and on
   expect(checks).toHaveProperty('records');
   // Should not have the "not running" error since one VM is running
   const errorRecords = checks.records.filter(r => r.type === 'error');
-  expect(errorRecords.length).toBe(0);
+  expect(errorRecords).toHaveLength(0);
   // Should have called getMemTotalInfo with the running connection's socket
   expect(getMemTotalInfo).toHaveBeenCalledWith('socket2');
 });

@@ -22,7 +22,6 @@ import * as path from 'node:path';
 
 import type { Octokit } from '@octokit/rest';
 import * as extensionApi from '@podman-desktop/api';
-import { tmpName } from 'tmp-promise';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import type { KindGithubReleaseArtifactMetadata } from './kind-installer';
@@ -30,6 +29,8 @@ import { KindInstaller } from './kind-installer';
 import * as util from './util';
 
 let installer: KindInstaller;
+
+vi.mock('node:fs');
 
 vi.mock('node:os', async () => {
   return {
@@ -60,16 +61,6 @@ beforeEach(() => {
   (extensionApi.env.isMac as unknown as boolean) = false;
 });
 
-test.skip('expect installBinaryToSystem to succesfully pass with a binary', async () => {
-  (extensionApi.env.isLinux as unknown as boolean) = true;
-
-  // Create a tmp file using tmp-promise
-  const filename = await tmpName();
-
-  // "Install" the binary, this should pass sucessfully
-  await expect(() => util.installBinaryToSystem(filename, 'tmpBinary')).rejects.toThrowError();
-});
-
 test('error: expect installBinaryToSystem to fail with a non existing binary', async () => {
   (extensionApi.env.isLinux as unknown as boolean) = true;
 
@@ -94,7 +85,7 @@ describe('grabLatestsReleasesMetadata', () => {
     });
     const releases = await installer.grabLatestsReleasesMetadata();
     expect(releases).toBeDefined();
-    expect(releases.length).toBe(5);
+    expect(releases).toHaveLength(5);
   });
 });
 
@@ -234,7 +225,6 @@ describe('install', () => {
     });
     vi.mocked(os.platform).mockReturnValue('win32');
     vi.mocked(os.arch).mockReturnValue('x64');
-    vi.mock('node:fs');
     vi.mocked(fs.existsSync).mockReturnValue(true);
     const chmodMock = vi.spyOn(fs.promises, 'chmod');
     const downloadReleaseAssetMock = vi
@@ -259,7 +249,6 @@ describe('install', () => {
     });
     vi.mocked(os.platform).mockReturnValue('darwin');
     vi.mocked(os.arch).mockReturnValue('x64');
-    vi.mock('node:fs');
     vi.mocked(fs.existsSync).mockReturnValue(true);
     const chmodMock = vi.spyOn(fs.promises, 'chmod').mockResolvedValue();
     const downloadReleaseAssetMock = vi
@@ -273,8 +262,6 @@ describe('install', () => {
 
 describe('downloadReleaseAsset', () => {
   test('should download the file if parent folder does exist', async () => {
-    vi.mock('node:fs');
-
     getReleaseAssetMock.mockImplementation(() => {
       return { data: 'foo' };
     });
@@ -297,8 +284,6 @@ describe('downloadReleaseAsset', () => {
   });
 
   test('should download the file if parent folder does not exist', async () => {
-    vi.mock('node:fs');
-
     getReleaseAssetMock.mockImplementation(() => {
       return { data: 'foo' };
     });
